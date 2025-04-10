@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghibli HRM</title> <!-- Tiêu đề chung, JS có thể cập nhật -->
+    <!-- Google Fonts Link (Playfair Display for Titles) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Your CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- Bắt đầu với chế độ auth-mode, trang đăng nhập hiển thị -->
+<body class="auth-mode">
+
+    <!-- ===== Cấu trúc App Chính (Ẩn ban đầu bởi CSS) ===== -->
+    <div class="app-container">
+        <!-- ===== Header ===== -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="logo">
+                    <img src="https://img.icons8.com/plasticine/100/totoro.png" alt="Ghibli HRM Logo" height="35">
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-button"><i class="fas fa-bell"></i></button>
+                <button class="icon-button"><i class="fas fa-question-circle"></i></button>
+                <div class="user-menu">
+                    <img src="https://via.placeholder.com/36/8aac8e/f6f4e8?text=A" alt="User Avatar" class="avatar">
+                    <span id="userDisplayName">Nhân Viên</span> <!-- Tên sẽ được cập nhật bởi JS -->
+                    <i class="fas fa-chevron-down"></i>
+                    <!-- Dropdown Đăng xuất -->
+                    <div class="user-dropdown" style="display: none;">
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+                 <button class="icon-button"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+
+        <!-- ===== Phần Thân (Sidebar + Nội dung chính) ===== -->
+        <div class="app-body">
+            <!-- ===== Sidebar ===== -->
+            <aside class="sidebar" id="sidebar">
+                <nav class="sidebar-nav">
+                    <ul>
+                        <!-- Trang chủ mặc định active -->
+                        <li class="active"><a href="#" data-page="page-dashboard"><i class="fas fa-home fa-fw"></i><span>Trang chủ</span></a></li>
+                        <li><a href="#" data-page="page-profile"><i class="fas fa-user-circle fa-fw"></i><span>Tài khoản</span></a></li>
+                        <li><a href="#" data-page="page-personnel"><i class="fas fa-users-cog fa-fw"></i><span>Nhân sự</span></a></li>
+                        <li><a href="#"><i class="fas fa-clock fa-fw"></i><span>Chấm công</span></a></li>
+                        <li><a href="#"><i class="fas fa-gift fa-fw"></i><span>Phúc lợi</span></a></li>
+                        <li><a href="#" data-page="page-evaluation"><i class="fas fa-clipboard-check fa-fw"></i><span>Đánh giá</span></a></li>
+                        <li><a href="#"><i class="fas fa-chart-bar fa-fw"></i><span>Báo cáo</span></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- ===== Vùng Nội dung chính ===== -->
+            <main class="main-content-area">
+                 <!-- Page: Bảng điều khiển (Dashboard) -->
+                <div id="page-dashboard" class="page-content app-page" data-title="Bảng điều khiển">
+                    <div class="content-header">
+                        <div class="welcome-message">
+                            <h1>Chào buổi sáng, <span class="dynamic-username">Nhân Viên</span>!</h1>
+                            <p>Chúc bạn một ngày làm việc hiệu quả và tràn đầy cảm hứng!</p>
+                        </div>
+                        <div class="actions">
+                             <button class="btn btn-primary quick-add-button"><i class="fas fa-plus"></i> Thêm nhanh...</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-grid feature-grid">
+                         <!-- Card Quản lý Tài khoản -->
+                        <a href="#" data-page="page-profile" class="card feature-card card-account">
+                            <div class="feature-icon icon-sky"><i class="fas fa-user-circle"></i></div>
+                            <div class="feature-info"><h3>Quản lý Tài khoản</h3><p>Thay đổi thông tin cá nhân, mật khẩu, cài đặt thông báo.</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <!-- Card Quản lý Thông tin Nhân sự -->
+                        <a href="#" data-page="page-personnel" class="card feature-card card-personnel">
+                            <div class="feature-icon icon-green"><i class="fas fa-users-cog"></i></div>
+                            <div class="feature-info"><h3>Thông tin Nhân sự</h3><p>Quản lý hồ sơ, hợp đồng, quá trình công tác của nhân viên.</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <!-- Card Quản lý Chấm công -->
+                        <a href="#" class="card feature-card card-timekeeping">
+                            <div class="feature-icon icon-blue"><i class="fas fa-clock"></i></div>
+                            <div class="feature-info"><h3>Quản lý Chấm công</h3><p>Theo dõi thời gian làm việc, quản lý đơn từ, bảng công.</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <!-- Card Quản lý Phúc lợi -->
+                        <a href="#" class="card feature-card card-benefits">
+                            <div class="feature-icon icon-yellow"><i class="fas fa-gift"></i></div>
+                            <div class="feature-info"><h3>Quản lý Phúc lợi</h3><p>Quản lý các chính sách bảo hiểm, phụ cấp, chương trình đãi ngộ.</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <!-- Card Quản lý Đánh giá -->
+                        <a href="#" data-page="page-evaluation" class="card feature-card card-evaluation">
+                            <div class="feature-icon icon-red"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="feature-info"><h3>Quản lý Đánh giá</h3><p>Thiết lập kỳ đánh giá, theo dõi kết quả và hiệu suất nhân viên.</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <!-- Card Báo cáo Thống kê -->
+                        <a href="#" class="card feature-card card-reports">
+                            <div class="feature-icon icon-grey"><i class="fas fa-chart-bar"></i></div>
+                            <div class="feature-info"><h3>Báo cáo Thống kê</h3><p>Xem các báo cáo về nhân sự, chấm công, lương thưởng...</p></div>
+                            <span class="feature-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+
+                 <!-- Page: Hồ sơ cá nhân (Ví dụ) -->
+                 <div id="page-profile" class="page-content app-page hidden" data-title="Hồ sơ cá nhân">
+                     <div class="content-header">
+                         <h1>Hồ sơ cá nhân</h1>
+                     </div>
+                     <div class="card">
+                         <div class="card-body">
+                             Nội dung trang quản lý tài khoản... Ví dụ: Form cập nhật thông tin.
+                             <div class="form-grid">
+                                 <div class="form-group">
+                                     <label for="profile-name">Họ và tên</label>
+                                     <input type="text" id="profile-name" value="Nhân Viên">
+                                 </div>
+                                 <div class="form-group">
+                                     <label for="profile-email">Email</label>
+                                     <input type="email" id="profile-email" value="nhanvien@example.com">
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="card-footer">
+                             <button class="btn btn-primary">Lưu thay đổi</button>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Page: Quản lý nhân sự (Ví dụ) -->
+                 <div id="page-personnel" class="page-content app-page hidden" data-title="Quản lý nhân sự">
+                     <div class="content-header">
+                         <h1>Quản lý nhân sự</h1>
+                          <div class="actions">
+                              <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Thêm nhân viên</button>
+                         </div>
+                     </div>
+                      <!-- Bảng nhân sự -->
+                       <div class="content-body">
+                          <div class="table-wrapper">
+                               <table>
+                                   <thead>
+                                       <tr>
+                                           <th><input type="checkbox"></th>
+                                           <th>Mã NV</th>
+                                           <th>Họ và Tên</th>
+                                           <th>Chức vụ</th>
+                                           <th>Phòng ban</th>
+                                           <th>Trạng thái</th>
+                                           <th>Hành động</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody>
+                                       <tr data-id="NV001">
+                                           <td><input type="checkbox"></td>
+                                           <td>NV001</td>
+                                           <td>Totoro Mập Ú</td>
+                                           <td>Trưởng phòng Sáng tạo</td>
+                                           <td>Phòng Nghiên cứu & Phát triển (R&D)</td>
+                                           <td><span class="status status-active">Đang làm việc</span></td>
+                                           <td>
+                                               <button class="action-btn btn-edit" title="Sửa"><i class="fas fa-pencil-alt"></i></button>
+                                               <button class="action-btn btn-danger delete-button" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                           </td>
+                                       </tr>
+                                        <tr data-id="NV002">
+                                           <td><input type="checkbox"></td>
+                                           <td>NV002</td>
+                                           <td>Mèo Jiji</td>
+                                           <td>Trợ lý Phù thủy</td>
+                                           <td>Phòng Chăm sóc khách hàng</td>
+                                            <td><span class="status status-active">Đang làm việc</span></td>
+                                          <td>
+                                               <button class="action-btn btn-edit" title="Sửa"><i class="fas fa-pencil-alt"></i></button>
+                                               <button class="action-btn btn-danger delete-button" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                           </td>
+                                       </tr>
+                                       <tr data-id="NV003">
+                                           <td><input type="checkbox"></td>
+                                           <td>NV003</td>
+                                           <td>Vô Diện</td>
+                                           <td>Khách VIP</td>
+                                           <td>Phòng Chăm sóc khách hàng</td>
+                                           <td><span class="status status-inactive">Đã nghỉ</span></td>
+                                           <td>
+                                                <button class="action-btn btn-edit" title="Sửa"><i class="fas fa-pencil-alt"></i></button>
+                                                <button class="action-btn btn-danger delete-button" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                       </tr>
+                                        <!-- Thêm các dòng khác nếu cần -->
+                                   </tbody>
+                               </table>
+                           </div>
+                           <!-- Ví dụ Pagination -->
+                           <div class="pagination">
+                               <span>Hiển thị <strong>1</strong>-<strong>3</strong> trong <strong>13</strong> mục</span> <!-- Cập nhật số lượng nếu cần -->
+                               <div class="page-nav">
+                                   <button disabled><i class="fas fa-chevron-left"></i></button>
+                                   <span>Trang <strong>1</strong> / 5</span> <!-- Cập nhật số trang -->
+                                   <button><i class="fas fa-chevron-right"></i></button>
+                               </div>
+                           </div>
+                       </div>
+                 </div>
+
+                                <!-- Page: Đánh giá nhân sự -->
+                                <div id="page-evaluation" class="page-content app-page hidden" data-title="Quản lý đánh giá">
+                                    <div class="content-header">
+                                        <h1>Quản lý Đánh giá Nhân sự</h1>
+                                        <div class="actions evaluation-mode-switcher">
+                                            <!-- Mode Switching Buttons -->
+                                            <button id="switchToSetupMode" class="btn btn-outline active-mode"><i class="fas fa-cog"></i> Thiết lập Kỳ Đánh giá</button>
+                                            <button id="switchToSelfEvalMode" class="btn btn-outline"><i class="fas fa-user-edit"></i> Thực hiện Tự Đánh giá</button>
+                                            <button id="switchToReviewMode" class="btn btn-outline"><i class="fas fa-eye"></i> Xem Đánh giá từ QL</button>
+                                        </div>
+                                    </div>
+                
+                                    <!-- == Section: Thiết lập Kỳ Đánh giá (Existing Functionality) == -->
+                                    <div id="evaluation-setup-mode" class="evaluation-content-section">
+                                        <!-- Section for Listing Existing Periods (Initially Visible) -->
+                                        <div id="existing-periods-section">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                                <h2 style="font-family: var(--font-secondary); font-weight: 500; color: var(--ghibli-green-deep); margin-bottom: 0; font-size: 20px;">Danh sách các Kỳ đánh giá</h2>
+                                                <!-- Button to show the setup form (only relevant in this mode) -->
+                                                <button id="showSetupFormButton" class="btn btn-primary"><i class="fas fa-plus"></i> Thiết lập Kỳ Mới</button>
+                                            </div>
+                                            <div class="content-body"> <!-- Reuse content-body for table styling -->
+                                                <div class="table-wrapper">
+                                                    <table id="evaluationPeriodsTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tên Kỳ Đánh giá</th>
+                                                                <th>Phòng ban Áp dụng</th>
+                                                                <th>Hạn đánh giá</th>
+                                                                <th>Trạng thái</th> <!-- e.g., Draft, Open, Closed -->
+                                                                <th>Hành động</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="evaluationPeriodsTableBody">
+                                                            <!-- Sample Row 1 (Populate dynamically later) -->
+                                                            <tr data-id="P2024Q4">
+                                                                <td>Đánh giá Quý 4/2024</td>
+                                                                <td>Phòng R&D, Phòng CSKH</td>
+                                                                <td>2024-12-31</td>
+                                                                <td><span class="status status-inactive">Đã đóng</span></td>
+                                                                <td>
+                                                                    <button class="action-btn btn-edit view-details-btn" title="Xem Chi tiết"><i class="fas fa-eye"></i></button>
+                                                                    <!-- Add edit/delete based on status -->
+                                                                    <button class="action-btn btn-edit edit-period-btn" title="Sửa Kỳ Đánh giá"><i class="fas fa-pencil-alt"></i></button>
+                                                                    <button class="action-btn btn-danger delete-button delete-period-btn" title="Xóa Kỳ Đánh giá"><i class="fas fa-trash-alt"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                             <!-- Sample Row 2 -->
+                                                             <tr data-id="P2025Q1">
+                                                                <td>Đánh giá Đầu năm 2025</td>
+                                                                <td>Phòng Kinh doanh</td>
+                                                                <td>2025-03-31</td>
+                                                                <td><span class="status status-active">Đang mở</span></td>
+                                                                <td>
+                                                                    <button class="action-btn btn-edit view-details-btn" title="Xem Chi tiết"><i class="fas fa-eye"></i></button>
+                                                                    <button class="action-btn btn-edit edit-period-btn" title="Sửa Kỳ Đánh giá"><i class="fas fa-pencil-alt"></i></button>
+                                                                    <button class="action-btn btn-danger delete-button delete-period-btn" title="Xóa Kỳ Đánh giá"><i class="fas fa-trash-alt"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                             <!-- Add a message if the table is empty -->
+                                                             <!--
+                                                             <tr class="no-periods-row" style="display: none;">
+                                                                 <td colspan="5" style="text-align: center; color: #777; padding: 30px;">Chưa có kỳ đánh giá nào được thiết lập.</td>
+                                                             </tr>
+                                                             -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                 <!-- Optional Pagination for periods list -->
+                                                 <div class="pagination">
+                                                    <span>Hiển thị <strong>1</strong>-<strong>2</strong> trong <strong>2</strong> kỳ</span>
+                                                    <div class="page-nav">
+                                                        <button disabled><i class="fas fa-chevron-left"></i></button>
+                                                        <span>Trang <strong>1</strong> / 1</span>
+                                                        <button disabled><i class="fas fa-chevron-right"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <!-- Section for Setting Up a New Period (Initially Hidden within Setup Mode) -->
+                                        <div id="evaluation-setup-form-section" class="hidden">
+                                            <h2 style="font-family: var(--font-secondary); font-weight: 500; color: var(--ghibli-green-deep); margin-bottom: 25px; font-size: 22px; text-align: center;">Thiết lập Kỳ Đánh giá Mới</h2>
+                                            <form id="evaluationSetupForm">
+                                                <!-- Card 1: General Information -->
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3>Thông tin Chung</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-grid" style="grid-template-columns: repeat(3, 1fr); gap: 20px 30px;">
+                                                            <!-- Tên kỳ đánh giá (Chiếm 3 cột) -->
+                                                            <div class="form-group" style="grid-column: 1 / -1;">
+                                                                <label for="periodName">Tên kỳ đánh giá <span style="color:red">*</span></label>
+                                                                <input type="text" id="periodName" name="periodName" required placeholder="Ví dụ: Đánh giá cuối năm 2024, Đánh giá Q1/2025">
+                                                            </div>
+                
+                                                            <!-- Vị trí áp dụng (Cột 1) -->
+                                                            <div class="form-group">
+                                                                <label for="periodPosition">Phòng ban áp dụng <span style="color:red">*</span></label>
+                                                                <select id="periodPosition" name="periodPosition" required>
+                                                                    <option value="" disabled selected>-- Chọn phòng ban --</option>
+                                                                    <option value="all">Tất cả phòng ban</option>
+                                                                    <option value="hr">Phòng Nhân sự (HR)</option>
+                                                                    <option value="acc">Phòng Kế toán - Tài chính</option>
+                                                                    <option value="sal">Phòng Kinh doanh (Sales)</option>
+                                                                    <option value="mkt">Phòng Marketing</option>
+                                                                    <option value="cus">Phòng Chăm sóc khách hàng</option>
+                                                                    <option value="pro">Phòng Sản xuất (Production)</option>
+                                                                    <option value="it">Phòng Công nghệ thông tin (IT)</option>
+                                                                    <option value="leg">Phòng Pháp lý (Legal)</option>
+                                                                    <option value="rnd">Phòng Nghiên cứu & Phát triển (R&D)</option>
+                                                                    <option value="adm">Phòng Hành chính - Văn phòng</option>
+                                                                </select>
+                                                            </div>
+                
+                                                            <!-- Thời gian lấy mục tiêu (Cột 2) -->
+                                                            <div class="form-group">
+                                                                <label for="periodTargetMonth">Tháng/Năm lấy mục tiêu <span style="color:red">*</span></label>
+                                                                <div style="position: relative;">
+                                                                    <input type="month" id="periodTargetMonth" name="periodTargetMonth" required
+                                                                           style="appearance: none; -webkit-appearance: none; padding-right: 35px; width: 100%;">
+                                                                    <i class="far fa-calendar-alt"
+                                                                       style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;">
+                                                                    </i>
+                                                                </div>
+                                                            </div>
+                
+                                                             <!-- Hạn đánh giá (Cột 3) -->
+                                                            <div class="form-group">
+                                                                <label for="periodDeadline">Hạn đánh giá <span style="color:red">*</span></label>
+                                                                <div style="position: relative;">
+                                                                    <input type="date" id="periodDeadline" name="periodDeadline" required
+                                                                           style="appearance: none; -webkit-appearance: none; padding-right: 35px; width: 100%;">
+                                                                    <i class="far fa-calendar-alt"
+                                                                        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;">
+                                                                    </i>
+                                                                </div>
+                                                            </div>
+                
+                                                            <!-- Tiêu chí đánh giá (Chiếm 3 cột) -->
+                                                            <div class="form-group" style="grid-column: 1 / -1;">
+                                                                <label for="periodCriteria">Mô tả Tiêu chí đánh giá <span style="color:red">*</span></label>
+                                                                <textarea id="periodCriteria" name="periodCriteria" rows="4" required placeholder="Mô tả các tiêu chí chính sẽ được sử dụng trong kỳ đánh giá này. Ví dụ: Hoàn thành công việc, Kỹ năng chuyên môn, Thái độ làm việc, Kỷ luật..."></textarea>
+                                                            </div>
+                
+                                                             <!-- Gửi lời nhắc tự động (Chiếm 3 cột) -->
+                                                            <div class="form-group" style="grid-column: 1 / -1; display: flex; align-items: center; padding-top: 10px;">
+                                                                 <input type="checkbox" id="periodSendReminder" name="periodSendReminder" style="width: auto; height: auto; margin-right: 10px; accent-color: var(--ghibli-green-medium);">
+                                                                 <label for="periodSendReminder" style="margin-bottom: 0; font-weight: 500; color: var(--text-secondary); cursor: pointer;">Gửi lời nhắc tự động trước hạn</label>
+                                                            </div>
+                                                        </div>
+                                                    </div> <!-- End card-body General Info -->
+                                                </div> <!-- End card General Info -->
+                
+                                                <!-- Card 2: Select Employees -->
+                                                <div class="card" style="margin-top: 25px;">
+                                                    <div class="card-header">
+                                                        <h3>Xác định Đối tượng Đánh giá <span style="color:red">*</span></h3>
+                                                    </div>
+                                                     <div class="card-body">
+                                                         <p style="margin-bottom: 15px; color: var(--text-secondary); font-size: 13px;">
+                                                             Danh sách nhân viên sẽ được lọc dựa trên 'Phòng ban' đã chọn ở trên. Vui lòng chọn (tick) những người sẽ tham gia kỳ đánh giá này.
+                                                             <br><small>(Lưu ý: Danh sách chỉ hiển thị khi đã chọn 'Phòng ban'. Ít nhất một người phải được chọn.)</small>
+                                                         </p>
+                                                         <div class="form-group" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                                                              <label style="display: inline-flex; align-items: center; margin-bottom: 0; font-weight: 600; cursor: pointer; color: var(--text-secondary);">
+                                                                 <input type="checkbox" id="selectAllEmployees" style="width: auto; height:auto; margin-right: 10px; accent-color: var(--ghibli-green-medium);"> Chọn Tất cả / Bỏ chọn Tất cả
+                                                             </label>
+                                                         </div>
+                                                         <!-- Employee list container -->
+                                                         <div id="evaluation-employee-list" style="max-height: 350px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; border-radius: var(--base-border-radius); background-color: rgba(250, 252, 251, 0.5);">
+                                                             <!-- Placeholder message -->
+                                                             <p id="employeeListPlaceholder" style="text-align: center; color: #888; padding: 20px 0;"><i>Vui lòng chọn 'Phòng ban' ở trên để tải danh sách nhân viên.</i></p>
+                                                             <!-- Employee items will be generated by JS -->
+                                                         </div>
+                                                         <!-- Hidden input to track if employees were loaded/selected -->
+                                                         <input type="hidden" id="employeesSelectedFlag" name="employeesSelectedFlag" required value="">
+                                                          <div id="employeeSelectionError" class="message error-message" style="display: none; margin-top: 15px;">
+                                                                <i class="fas fa-exclamation-circle"></i>
+                                                                <span>Vui lòng chọn ít nhất một nhân viên để đánh giá.</span>
+                                                          </div>
+                                                     </div> <!-- End card-body Select Employees -->
+                                                     <div class="card-footer">
+                                                         <button type="button" id="cancelSetupButton" class="btn btn-outline" style="margin-right: 10px;">Hủy bỏ</button>
+                                                         <button type="submit" id="saveEvaluationPeriodButton" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Kỳ Đánh giá</button>
+                                                     </div>
+                                                </div> <!-- End card Select Employees -->
+                                            </form>
+                                        </div> <!-- End evaluation-setup-form-section -->
+                                    </div> <!-- End evaluation-setup-mode -->
+                
+                                    <!-- == Section: Tự Đánh giá == -->
+                                    <div id="evaluation-self-mode" class="evaluation-content-section hidden">
+                                         <h2 style="font-family: var(--font-secondary); font-weight: 500; color: var(--ghibli-green-deep); margin-bottom: 25px; font-size: 22px; text-align: center;">Phiếu Tự Đánh giá</h2>
+                                         <div class="card">
+                                             <form id="selfEvaluationForm">
+                                                 <div class="card-body">
+                                                     <!-- Period Selection -->
+                                                     <div class="form-group" style="margin-bottom: 25px;">
+                                                         <label for="selfEvalPeriodSelect">Chọn Kỳ Đánh giá để thực hiện <span style="color:red">*</span></label>
+                                                         <select id="selfEvalPeriodSelect" name="evaluationPeriodId" required>
+                                                             <option value="" disabled selected>-- Vui lòng chọn Kỳ Đánh giá --</option>
+                                                             <!-- Options will be populated by JS, e.g., only 'Đang mở' periods for this user -->
+                                                             <option value="P2025Q1">Đánh giá Đầu năm 2025 (Hạn: 2025-03-31)</option>
+                                                             <!-- <option value="PXXXXXX">Tên Kỳ Đánh Giá Khác (Hạn: YYYY-MM-DD)</option> -->
+                                                         </select>
+                                                     </div>
+                
+                                                     <!-- Evaluation Criteria Form -->
+                                                     <div id="selfEvalCriteriaSection" class="hidden"> <!-- Show only after selecting a period -->
+                                                         <h3 style="margin-bottom: 20px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Tiêu chí đánh giá (Thang điểm 1-10)</h3>
+                                                         <div class="form-grid" style="grid-template-columns: repeat(2, 1fr); gap: 15px 30px;">
+                                                             <!-- Criterion 1 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_product_knowledge">Am hiểu về sản phẩm</label>
+                                                                 <select id="crit_product_knowledge" name="criteria[product_knowledge]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                             <!-- Criterion 2 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_business_acumen">Am hiểu nghiệp vụ</label>
+                                                                 <select id="crit_business_acumen" name="criteria[business_acumen]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                             <!-- Criterion 3 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_management">Quản lý</label>
+                                                                 <select id="crit_management" name="criteria[management]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                             <!-- Criterion 4 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_analysis">Phân tích</label>
+                                                                 <select id="crit_analysis" name="criteria[analysis]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                              <!-- Criterion 5 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_project_management">Quản lý dự án</label>
+                                                                 <select id="crit_project_management" name="criteria[project_management]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                             <!-- Criterion 6 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_problem_solving">Giải quyết vấn đề</label>
+                                                                 <select id="crit_problem_solving" name="criteria[problem_solving]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                             <!-- Criterion 7 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_responsibility">Tinh thần trách nhiệm</label>
+                                                                 <select id="crit_responsibility" name="criteria[responsibility]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                              <!-- Criterion 8 -->
+                                                             <div class="form-group">
+                                                                 <label for="crit_attitude">Thái độ</label>
+                                                                 <select id="crit_attitude" name="criteria[attitude]" class="criteria-score-select">
+                                                                     <option value="" disabled selected>- Chọn điểm -</option>
+                                                                     <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                                                                     <option value="4">4</option> <option value="5">5</option> <option value="6">6</option>
+                                                                     <option value="7">7</option> <option value="8">8</option> <option value="9">9</option>
+                                                                     <option value="10">10</option>
+                                                                 </select>
+                                                             </div>
+                                                         </div>
+                                                         <!-- Optional Comments -->
+                                                         <div class="form-group full-width" style="margin-top: 20px;">
+                                                             <label for="selfEvalComments">Ghi chú / Tự nhận xét thêm (Tùy chọn)</label>
+                                                             <textarea id="selfEvalComments" name="comments" rows="4" placeholder="Thêm nhận xét về điểm mạnh, điểm yếu, hoặc kế hoạch cải thiện..."></textarea>
+                                                         </div>
+                                                     </div> <!-- End selfEvalCriteriaSection -->
+                                                     <div id="selfEvalLoadingMessage" class="message info-message hidden" style="margin-top: 20px;">
+                                                            <i class="fas fa-info-circle"></i>
+                                                            <span>Vui lòng chọn Kỳ Đánh giá để bắt đầu.</span>
+                                                      </div>
+                                                      <div id="selfEvalAlreadySubmitted" class="message success-message hidden" style="margin-top: 20px;">
+                                                            <i class="fas fa-check-circle"></i>
+                                                            <span>Bạn đã nộp bản tự đánh giá cho kỳ này.</span>
+                                                      </div>
+                                                 </div> <!-- End card-body -->
+                                                 <div class="card-footer">
+                                                     <button type="submit" id="saveSelfEvaluationButton" class="btn btn-primary" disabled><i class="fas fa-paper-plane"></i> Nộp Tự Đánh giá</button>
+                                                 </div>
+                                             </form>
+                                         </div> <!-- End card -->
+                                    </div> <!-- End evaluation-self-mode -->
+                
+                                    <!-- == Section: Xem Đánh giá từ Quản lý == -->
+                                    <div id="evaluation-review-mode" class="evaluation-content-section hidden">
+                                         <h2 style="font-family: var(--font-secondary); font-weight: 500; color: var(--ghibli-green-deep); margin-bottom: 25px; font-size: 22px; text-align: center;">Xem lại Đánh giá từ Quản lý</h2>
+                                         <div class="card">
+                                            <div class="card-body">
+                                                <!-- Period Selection -->
+                                                <div class="form-group" style="margin-bottom: 25px;">
+                                                    <label for="reviewPeriodSelect">Chọn Kỳ Đánh giá để xem <span style="color:red">*</span></label>
+                                                    <select id="reviewPeriodSelect" name="reviewPeriodId" required>
+                                                        <option value="" disabled selected>-- Vui lòng chọn Kỳ Đánh giá --</option>
+                                                        <!-- Options populated by JS, e.g., only 'Closed' periods with manager review available -->
+                                                         <option value="P2024Q4">Đánh giá Quý 4/2024 (Đã đóng)</option>
+                                                         <!-- <option value="PXXXXXX">Tên Kỳ Đánh Giá Khác (Trạng thái)</option> -->
+                                                    </select>
+                                                </div>
+                
+                                                <!-- Display Area for Manager's Evaluation -->
+                                                <div id="managerReviewDisplayArea" class="hidden"> <!-- Show only after selecting a period AND data is loaded -->
+                                                    <h3 style="margin-bottom: 10px; color: var(--text-primary);">Kết quả Đánh giá từ Quản lý</h3>
+                                                    <p style="margin-bottom: 20px; font-size: 13px; color: var(--text-secondary);">Mã phiếu: <strong id="reviewTicketId">#MGR-EVL-XXXX</strong></p>
+                
+                                                    <div class="review-details-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                                                        <!-- Scores Display -->
+                                                        <div class="review-scores">
+                                                            <h4 style="margin-bottom: 15px; font-weight: 600;">Điểm số chi tiết (Thang 1-10):</h4>
+                                                            <dl style="font-size: 14px;">
+                                                                <div class="review-item"><dt>Am hiểu về sản phẩm:</dt> <dd><strong id="score_product_knowledge">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Am hiểu nghiệp vụ:</dt> <dd><strong id="score_business_acumen">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Quản lý:</dt> <dd><strong id="score_management">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Phân tích:</dt> <dd><strong id="score_analysis">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Quản lý dự án:</dt> <dd><strong id="score_project_management">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Giải quyết vấn đề:</dt> <dd><strong id="score_problem_solving">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Tinh thần trách nhiệm:</dt> <dd><strong id="score_responsibility">N/A</strong></dd></div>
+                                                                <div class="review-item"><dt>Thái độ:</dt> <dd><strong id="score_attitude">N/A</strong></dd></div>
+                                                            </dl>
+                                                             <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color-light);">
+                                                             <div class="review-item total-score">
+                                                                 <dt style="font-size: 16px;">Tổng điểm:</dt>
+                                                                 <dd style="font-size: 18px; color: var(--ghibli-green-deep);"><strong id="score_total">N/A</strong></dd>
+                                                             </div>
+                                                        </div>
+                
+                                                        <!-- Comments & Feedback -->
+                                                        <div class="review-comments-feedback">
+                                                             <h4 style="margin-bottom: 15px; font-weight: 600;">Nhận xét từ Quản lý:</h4>
+                                                             <p id="managerCommentsDisplay" style="background-color: var(--ghibli-green-light); padding: 15px; border-radius: var(--base-border-radius); min-height: 80px; line-height: 1.6; margin-bottom: 25px; border: 1px solid var(--border-color); font-size: 14px;">
+                                                                 <i>(Chưa có nhận xét)</i>
+                                                             </p>
+                
+                                                             <!-- Feedback Section (Extend) -->
+                                                             <div id="feedbackSection">
+                                                                 <button id="toggleFeedbackFormButton" type="button" class="btn btn-secondary"><i class="fas fa-comments"></i> Gửi Phản hồi về Đánh giá</button>
+                                                                 <form id="feedbackForm" class="hidden" style="margin-top: 20px;">
+                                                                     <div class="form-group">
+                                                                         <label for="employeeFeedback">Nội dung phản hồi:</label>
+                                                                         <textarea id="employeeFeedback" name="feedback_content" rows="4" placeholder="Nhập ý kiến, thắc mắc hoặc đồng thuận của bạn về kết quả đánh giá này..." required></textarea>
+                                                                     </div>
+                                                                     <button type="submit" id="submitFeedbackButton" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi Phản hồi</button>
+                                                                     <button type="button" id="cancelFeedbackButton" class="btn btn-outline" style="margin-left: 10px;">Hủy</button>
+                                                                 </form>
+                                                                  <div id="feedbackSuccessMessage" class="message success-message hidden" style="margin-top: 15px;">
+                                                                      <i class="fas fa-check-circle"></i>
+                                                                      <span>Đã gửi phản hồi thành công.</span>
+                                                                 </div>
+                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                </div> <!-- End managerReviewDisplayArea -->
+                
+                                                <div id="reviewLoadingMessage" class="message info-message" style="margin-top: 20px;">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <span>Vui lòng chọn Kỳ Đánh giá để xem kết quả.</span>
+                                                </div>
+                                                <div id="reviewUnavailableMessage" class="message warning-message hidden" style="margin-top: 20px;">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    <span>Chưa có đánh giá từ quản lý cho kỳ này hoặc kỳ đánh giá chưa đóng.</span>
+                                                </div>
+                
+                                            </div> <!-- End card-body -->
+                                         </div> <!-- End card -->
+                                    </div> <!-- End evaluation-review-mode -->
+                
+                                </div> <!-- End page-evaluation -->
+
+
+                 <!-- Thêm các trang app khác ở đây -->
+                 <!-- <div id="page-..." class="page-content app-page hidden"> Nội dung trang... </div> -->
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== Cấu trúc các trang Xác thực (Auth) ===== -->
+    <div class="auth-container">
+        <!-- Page: Đăng nhập -->
+        <div id="page-login" class="page-content auth-page">
+            <div class="login-container">
+                <div class="login-box">
+                    <div class="logo">
+                        <img src="https://img.icons8.com/plasticine/100/totoro.png" alt="Ghibli HRM Logo">
+                    </div>
+                    <h2>Chào mừng trở lại!</h2>
+                    <form id="loginForm">
+                         <div id="loginErrorMessage" class="message error-message" style="display: none;">
+                             <i class="fas fa-exclamation-circle"></i>
+                             <span id="loginErrorText"></span>
+                         </div>
+                         <div id="loginSuccessMessage" class="message success-message" style="display: none;">
+                             <i class="fas fa-check-circle"></i>
+                             <span id="loginSuccessText"></span>
+                         </div>
+                        <div class="form-group">
+                            <label for="employeeId">Mã nhân viên</label>
+                            <input type="text" id="employeeId" name="employee_id" placeholder="Nhập mã nhân viên" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+                        </div>
+                        <div class="login-options">
+                            <label>
+                                <input type="checkbox" name="remember_me"> Ghi nhớ đăng nhập
+                            </label>
+                            <a href="#" id="forgotPasswordLink">Quên mật khẩu?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-leaf"></i> Đăng nhập
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Quên Mật khẩu (Nhập Email) -->
+        <div id="page-forgot-password" class="page-content auth-page hidden">
+             <div class="login-container">
+                <div class="login-box">
+                     <div class="logo">
+                        <img src="https://img.icons8.com/plasticine/100/totoro.png" alt="Ghibli HRM Logo">
+                    </div>
+                    <h2>Quên Mật khẩu</h2>
+                    <p class="info-text">
+                        Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn. Chúng tôi sẽ gửi mã xác nhận đến email đó.
+                    </p>
+                     <form id="forgotPasswordForm">
+                        <div id="forgotErrorMessage" class="message error-message" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span id="forgotErrorText"></span>
+                        </div>
+                        <div id="forgotSuccessMessage" class="message success-message" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="forgotSuccessText"></span>
+                        </div>
+                         <div class="form-group">
+                            <label for="forgotEmail">Địa chỉ Email</label>
+                            <input type="email" id="forgotEmail" name="email" placeholder="Nhập email của bạn" required>
+                        </div>
+                        <button type="submit" id="sendCodeButton" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Gửi mã xác nhận
+                        </button>
+                    </form>
+                     <div class="back-link">
+                        <a href="#" class="back-to-login-link">
+                            <i class="fas fa-arrow-left"></i> Quay lại Đăng nhập
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Xác nhận Mã -->
+        <div id="page-verify-code" class="page-content auth-page hidden">
+            <div class="login-container">
+                <div class="login-box">
+                    <div class="logo">
+                        <img src="https://img.icons8.com/plasticine/100/totoro.png" alt="Ghibli HRM Logo">
+                    </div>
+                    <h2>Nhập mã xác nhận</h2>
+                    <p class="info-text">
+                        Một mã xác nhận đã được gửi đến địa chỉ email <strong id="displayUserEmail">email@example.com</strong>. Vui lòng nhập mã vào ô bên dưới.
+                        <br><small>(Kiểm tra cả thư mục Spam/Junk)</small>
+                    </p>
+                    <form id="verifyCodeForm">
+                        <div id="verifyErrorMessage" class="message error-message" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span id="verifyErrorText"></span>
+                        </div>
+                        <div id="verifySuccessMessage" class="message success-message" style="display: none;">
+                             <i class="fas fa-check-circle"></i>
+                             <span id="verifySuccessText"></span>
+                         </div>
+                        <div class="form-group">
+                            <label for="verificationCode">Mã xác nhận</label>
+                            <input type="text" id="verificationCode" name="verification_code" placeholder="Nhập mã gồm 6 chữ số" required inputmode="numeric" pattern="[0-9]*" maxlength="6">
+                        </div>
+                        <button type="submit" id="verifyCodeButton" class="btn btn-primary">
+                            <i class="fas fa-check-circle"></i> Xác nhận mã
+                        </button>
+                        <p class="resend-code">
+                            Không nhận được mã?
+                            <a href="#" id="resendCodeLink">Gửi lại mã</a>
+                            <span id="resendTimer" style="display: none;"></span>
+                        </p>
+                    </form>
+                    <div class="back-link">
+                        <a href="#" class="back-to-login-link">
+                            <i class="fas fa-arrow-left"></i> Quay lại Đăng nhập
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Đặt lại Mật khẩu -->
+        <div id="page-reset-password" class="page-content auth-page hidden">
+            <div class="login-container">
+                <div class="login-box">
+                    <div class="logo">
+                        <img src="https://img.icons8.com/plasticine/100/totoro.png" alt="Ghibli HRM Logo">
+                    </div>
+                    <h2>Đặt lại mật khẩu mới</h2>
+                    <p class="info-text">
+                        Vui lòng nhập mật khẩu mới của bạn. Đảm bảo mật khẩu đủ mạnh và dễ nhớ.
+                    </p>
+                    <form id="resetPasswordForm">
+                        <div id="resetErrorMessage" class="message error-message" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span id="resetErrorText"></span>
+                        </div>
+                        <div id="resetSuccessMessage" class="message success-message" style="display: none;">
+                             <i class="fas fa-check-circle"></i>
+                             <span id="resetSuccessText"></span>
+                         </div>
+                        <div class="form-group">
+                            <label for="newPassword">Mật khẩu mới</label>
+                            <input type="password" id="newPassword" name="new_password" placeholder="Nhập mật khẩu mới" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                            <input type="password" id="confirmPassword" name="confirm_password" placeholder="Nhập lại mật khẩu mới" required>
+                        </div>
+                        <button type="submit" id="resetPasswordButton" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Đặt lại Mật khẩu
+                        </button>
+                    </form>
+                    <div class="back-link">
+                        <a href="#" class="back-to-login-link">
+                            <i class="fas fa-arrow-left"></i> Quay lại Đăng nhập
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Kết thúc Auth Container -->
+
+    <script src="script.js"></script>
+</body>
+</html>

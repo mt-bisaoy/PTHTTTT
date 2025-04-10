@@ -1,0 +1,1247 @@
+/* --- Reset & Global Styles --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Biến CSS Chủ đề Ghibli --- */
+:root {
+    /* Bảng màu */
+    --ghibli-green-deep: #5e8c6a;
+    --ghibli-green-medium: #8aac8e;
+    --ghibli-green-light: #eaf3ec;
+    --ghibli-blue-sky: #a4c9d5;
+    --ghibli-blue-water: #498196;
+    --ghibli-cream: #f6f4e8;
+    --ghibli-yellow-sun: #f5d78c;
+    --ghibli-grey-totoro: #6d7a74;
+    --ghibli-brown-earth: #a0856f;
+    --ghibli-red-accent: #d87070;
+
+    /* Chữ */
+    --text-primary: #334c40;
+    --text-secondary: #3f5149;
+    --text-white: #ffffff;
+    --text-link: var(--ghibli-blue-water);
+    --text-link-hover: var(--ghibli-green-deep);
+
+    /* Nền */
+    --bg-main-app: #f9fbf8; /* Nền chính của app */
+    --bg-content: var(--text-white); /* Nền các card, bảng */
+    --bg-header-sidebar: var(--text-white); /* Nền header, sidebar */
+    /* Ảnh nền riêng cho trang đăng nhập */
+    --ghibli-login-background-image: url('hình\ nền\ đăng\ nhập.jpg'); /* Thay bằng URL ảnh nền thực tế */
+    /* Ảnh nền cho vùng nội dung chính (tùy chọn) */
+    --ghibli-background-image: url('https://images.unsplash.com/photo-1542641589-8036a7613247?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');
+
+    /* Viền & Bóng đổ */
+    --border-color: #dce4e0;
+    --border-color-strong: #c8d5cf;
+    --base-border-radius: 6px;
+    --card-shadow: 0 3px 8px rgba(109, 122, 116, 0.1);
+
+    /* Layout */
+    --header-height: 60px;
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 70px;
+
+    /* Fonts & Hiệu ứng chuyển động */
+    --font-primary: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    --font-secondary: 'Playfair Display', serif; /* Font cho tiêu đề lớn */
+    --base-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Trang trí */
+    --ghibli-card-corner-image: url('https://www.transparentpng.com/thumb/leaf/green-leaf-clip-art-transparent-png-image--Ujijiv.png');
+}
+
+/* --- Kiểu dáng Body cơ bản --- */
+body {
+    font-family: var(--font-primary);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    background-color: var(--bg-main-app); /* Mặc định cho chế độ app */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden; /* Ngăn cuộn ngang */
+    position: relative;
+}
+
+/* --- CHẾ ĐỘ LAYOUT --- */
+
+/* == Chế độ Auth (Đăng nhập, Quên MK,...) == */
+body.auth-mode {
+    display: flex;
+    justify-content: center; /* Căn giữa box theo chiều ngang */
+    align-items: center; /* Căn giữa box theo chiều dọc */
+    background-image: var(--ghibli-login-background-image); /* Ảnh nền */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Giữ nền cố định khi cuộn (nếu trang dài) */
+}
+
+/* Lớp phủ tối cho chế độ auth */
+body.auth-mode::before {
+    content: '';
+    position: absolute;
+    inset: 0; /* Phủ toàn bộ body */
+    background-color: rgba(0, 0, 0, 0.2); /* Lớp phủ đen mờ */
+    z-index: 1; /* Nằm trên ảnh nền, dưới nội dung */
+    pointer-events: none; /* Cho phép click xuyên qua */
+}
+
+/* Ẩn cấu trúc app trong chế độ auth */
+body.auth-mode .app-container {
+    display: none;
+}
+
+/* Hiển thị cấu trúc auth trong chế độ auth */
+body.auth-mode .auth-container {
+    display: block; /* Hoặc flex nếu cần */
+    position: relative; /* Để nằm trên lớp phủ */
+    z-index: 2;
+    width: 100%; /* Chiếm đủ rộng để căn giữa login-container */
+    display: flex; /* Dùng flex để dễ căn giữa */
+    justify-content: center;
+    padding: 20px; /* Thêm padding để box không sát viền màn hình nhỏ */
+}
+
+/* Nội dung trang Auth (Box đăng nhập,...) */
+.auth-page .login-container {
+    min-height: 520px; /* Chiều cao tối thiểu */
+    max-width: 400px; /* Chiều rộng tối đa */
+    width: 100%; /* Chiếm toàn bộ chiều rộng màn hình nhỏ */
+    /* margin: 20px auto; /* Bỏ margin auto khi dùng flex để căn giữa */
+}
+
+.auth-page .login-box {
+    background-color: rgba(255, 255, 255, 0.85); /* Nền trắng hơi trong */
+    padding: 45px 40px; /* Padding bên trong */
+    border-radius: var(--base-border-radius, 8px); /* Bo góc */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Bóng đổ */
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+    position: relative;
+    overflow: hidden; /* Giữ hình trang trí góc bên trong */
+    min-height: 520px; /* Chiều cao tối thiểu */
+    min-width: 400px; /* Chiều rộng tối thiểu */
+    width: 100%; /* Đảm bảo chiếm đủ chiều rộng container */
+    display: flex; /* Sử dụng flexbox để căn chỉnh nội dung */
+    flex-direction: column; /* Xếp nội dung theo cột */
+    justify-content: center; /* Căn giữa nội dung dọc */
+}
+
+/* Hình trang trí góc cho box auth */
+.auth-page .login-box::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 80px; /* Giảm kích thước lá */
+    height: 80px;
+    background-image: var(--ghibli-card-corner-image);
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.4; /* Hơi mờ */
+    pointer-events: none; /* Không tương tác được */
+}
+
+/* Căn chỉnh các thành phần bên trong login-box khi dùng flex */
+.auth-page .login-box .logo {
+     margin-bottom: 20px;
+     flex-shrink: 0; /* Không bị co lại */
+}
+.auth-page .login-box h2 {
+    margin-bottom: 15px;
+    flex-shrink: 0;
+    font-family: var(--font-secondary); /* Áp dụng font tiêu đề */
+    font-weight: 600;
+}
+.auth-page .info-text {
+    margin-bottom: 30px;
+    line-height: 1.6;
+    text-align: center; /* Đảm bảo text căn giữa */
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+.auth-page .info-text small {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+}
+.auth-page .login-box form {
+    margin-top: auto; /* Đẩy form và các phần tử dưới nó xuống dưới nếu cần */
+    margin-bottom: auto; /* Cân bằng khoảng trống trên và dưới form */
+    width: 100%; /* Đảm bảo form chiếm đủ chiều rộng */
+    flex-shrink: 0;
+}
+.auth-page .back-link {
+     margin-top: 25px;
+     flex-shrink: 0;
+}
+
+
+/* Form group trong trang Auth */
+.auth-page .form-group {
+    margin-bottom: 22px;
+    text-align: left; /* Căn trái label và input */
+}
+
+.auth-page label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-secondary, #3d554a);
+}
+
+/* Input trong trang Auth */
+.auth-page input[type="text"],
+.auth-page input[type="email"],
+.auth-page input[type="password"],
+.auth-page input[type="number"] { /* Đảm bảo định dạng cho type number */
+    width: 100%;
+    background-color: rgba(234, 243, 236, 0.8); /* Nền xanh lá nhạt, hơi trong */
+    border: 1px solid transparent;
+    padding: 13px 16px;
+    border-radius: 4px;
+    color: #333; /* Màu chữ tối */
+    font-family: inherit; /* Kế thừa font */
+    font-size: 15px;
+    transition: var(--base-transition);
+}
+.auth-page input::placeholder {
+    color: #4f4e4e;
+    opacity: 1;
+}
+.auth-page input:focus { /* Hiệu ứng khi focus */
+     background-color: var(--text-white, #ffffff); /* Nền trắng */
+     border-color: var(--ghibli-green-medium, #8aac8e); /* Viền xanh vừa */
+     box-shadow: 0 0 0 3px rgba(138, 172, 142, 0.2); /* Bóng đổ focus */
+     outline: none; /* Bỏ viền focus mặc định */
+}
+
+/* Tùy chọn đăng nhập (Ghi nhớ, Quên MK) */
+.auth-page .login-options {
+    display: flex;
+    justify-content: space-between; /* Đẩy 2 bên */
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 15px;
+}
+.auth-page .login-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+}
+.auth-page .login-options input[type="checkbox"] {
+     margin-right: 8px;
+     width: 15px;
+     height: 15px;
+     accent-color: var(--ghibli-green-medium); /* Màu khi check */
+     vertical-align: middle;
+     cursor: pointer;
+}
+.auth-page .login-options a {
+    color: var(--text-link, #185c77);
+    font-weight: 500;
+}
+.auth-page .login-options a:hover {
+    color: var(--text-link-hover, #5e8c6a);
+    text-decoration: underline;
+}
+
+/* Nút chính trong trang Auth */
+.auth-page .btn-primary {
+     width: 100%; /* Chiếm toàn bộ chiều rộng */
+     margin-top: 10px; /* Khoảng cách phía trên */
+}
+
+/* Link Gửi lại mã */
+.auth-page .resend-code {
+     margin-top: 20px;
+     font-size: 14px;
+     color: var(--text-secondary);
+     display: block; /* Đảm bảo nó chiếm dòng riêng */
+     text-align: center; /* Căn giữa */
+}
+.auth-page .resend-code a {
+     color: var(--text-link);
+     font-weight: 600;
+     cursor: pointer;
+}
+.auth-page .resend-code a:hover {
+     color: var(--text-link-hover);
+     text-decoration: underline;
+}
+.auth-page .resend-code a.disabled { /* Khi bị vô hiệu hóa */
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      text-decoration: none;
+      opacity: 0.7;
+}
+.auth-page .resend-code span { /* Bộ đếm ngược */
+    font-weight: 600;
+    margin-left: 5px;
+    color: var(--text-primary); /* Màu đậm hơn cho dễ thấy */
+}
+
+/* Link Quay lại Đăng nhập */
+.auth-page .back-link {
+    margin-top: 25px;
+    font-size: 15px;
+}
+.auth-page .back-link a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.auth-page .back-link a:hover {
+     color: var(--ghibli-green-deep);
+     text-decoration: underline;
+}
+.auth-page .back-link a i {
+    margin-right: 5px;
+    position: relative;
+    top: 1px; /* Căn chỉnh icon mũi tên */
+}
+
+
+/* == Chế độ App (Sau khi đăng nhập) == */
+body.app-mode {
+    background-color: var(--bg-main-app); /* Nền chính của app */
+    background-image: none; /* Bỏ ảnh nền của chế độ auth */
+}
+body.app-mode::before {
+    display: none; /* Ẩn lớp phủ tối */
+}
+
+/* Ẩn cấu trúc auth trong chế độ app */
+body.app-mode .auth-container {
+    display: none;
+}
+
+/* Hiển thị cấu trúc app trong chế độ app */
+body.app-mode .app-container {
+    display: flex;
+    flex-direction: column; /* Header trên cùng, body ở dưới */
+    height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    overflow: hidden; /* Ngăn cuộn toàn bộ trang */
+}
+
+/* Header của App */
+.app-header {
+    display: flex;
+    justify-content: space-between; /* Đẩy các nhóm trái/phải ra xa */
+    align-items: center;
+    padding: 0 30px; /* Padding ngang */
+    height: var(--header-height); /* Chiều cao cố định */
+    background-color: rgba(255, 255, 255, 0.9); /* Nền trắng hơi trong */
+    backdrop-filter: blur(5px); /* Làm mờ nền phía sau (nếu trình duyệt hỗ trợ) */
+    border-bottom: 1px solid var(--border-color); /* Đường kẻ dưới */
+    flex-shrink: 0; /* Không co lại khi nội dung dài */
+    z-index: 10; /* Nằm trên các phần tử khác */
+}
+
+/* Body của App (chứa Sidebar và Nội dung chính) */
+.app-body {
+    display: flex; /* Sidebar và nội dung nằm ngang */
+    flex-grow: 1; /* Chiếm hết phần còn lại của chiều cao */
+    overflow: hidden; /* Quan trọng để các vùng con cuộn độc lập */
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width); /* Chiều rộng mặc định */
+    background-color: rgba(255, 255, 255, 0.9); /* Đồng bộ với header */
+    backdrop-filter: blur(5px);
+    border-right: 1px solid var(--border-color); /* Đường kẻ phải */
+    padding-top: 20px; /* Khoảng cách trên cùng */
+    transition: width var(--base-transition); /* Hiệu ứng thu gọn */
+    overflow-y: auto; /* Cho phép cuộn dọc nếu menu dài */
+    flex-shrink: 0; /* Không bị co lại */
+    z-index: 5;
+}
+.sidebar.collapsed { /* Khi sidebar thu gọn */
+    width: var(--sidebar-collapsed-width);
+}
+.sidebar.collapsed .sidebar-nav span,
+.sidebar.collapsed .sidebar-title {
+    display: none; /* Ẩn chữ */
+    opacity: 0; /* Mờ dần đi */
+}
+.sidebar.collapsed .sidebar-nav a {
+    justify-content: center; /* Căn giữa icon */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Vùng Nội dung chính */
+.main-content-area {
+    flex-grow: 1; /* Chiếm hết phần ngang còn lại */
+    padding: 30px; /* Padding xung quanh nội dung */
+    overflow-y: auto; /* Cho phép cuộn dọc độc lập */
+    position: relative; /* Cần cho lớp phủ nền */
+    z-index: 1;
+    /* Ảnh nền cho vùng nội dung (tùy chọn) */
+    background-image: var(--ghibli-background-image);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed; /* Nền đứng yên khi cuộn */
+}
+
+/* Lớp phủ cho nền vùng nội dung */
+.main-content-area::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.85); /* Màu trắng trong 85% */
+    z-index: -1; /* Nằm dưới nội dung, trên ảnh nền */
+    pointer-events: none; /* Cho phép click xuyên qua */
+}
+
+/* Đảm bảo nội dung trang nằm trên lớp phủ */
+.page-content.app-page {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- THÀNH PHẦN DÙNG CHUNG (Trong cả 2 chế độ hoặc chủ yếu trong app) --- */
+
+/* Class tiện ích để ẩn phần tử */
+.hidden {
+    display: none !important;
+}
+
+/* Link */
+a {
+    text-decoration: none;
+    color: var(--text-link);
+    transition: var(--base-transition);
+}
+a:hover {
+    color: var(--text-link-hover);
+}
+
+ul { list-style: none; } /* Bỏ dấu chấm đầu dòng của list */
+
+/* Nút bấm */
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit; /* Dùng font chung */
+    transition: var(--base-transition);
+    color: var(--text-primary);
+}
+
+.btn {
+    padding: 10px 20px; /* Kích thước đệm */
+    border-radius: var(--base-border-radius); /* Bo góc */
+    font-size: 14px; /* Cỡ chữ */
+    font-weight: 600; /* Độ đậm */
+    display: inline-flex; /* Để icon và text thẳng hàng */
+    align-items: center;
+    justify-content: center; /* Căn giữa nội dung nút */
+    gap: 8px; /* Khoảng cách giữa icon và text */
+    border: 1px solid transparent; /* Viền trong suốt mặc định */
+    line-height: 1.5; /* Chiều cao dòng */
+    white-space: nowrap; /* Ngăn text xuống dòng */
+}
+.btn i { /* Icon trong nút */
+    font-size: 1em; /* Cỡ chữ bằng text */
+    position: relative;
+    top: -1px; /* Căn chỉnh icon dọc nhỏ */
+}
+.btn:disabled { /* Khi nút bị vô hiệu hóa */
+    opacity: 0.6;
+    cursor: not-allowed; /* Con trỏ cấm */
+    background-color: #ccc; /* Thêm màu nền xám khi disabled */
+    border-color: #ccc;
+    color: #666;
+    box-shadow: none;
+    transform: none;
+}
+.btn:disabled:hover { /* Bỏ hiệu ứng hover khi bị vô hiệu hóa */
+     transform: none;
+     box-shadow: none;
+     background-color: #ccc; /* Giữ nguyên màu nền xám */
+}
+
+
+/* Nút chính (Primary) */
+.btn-primary {
+    background-color: var(--ghibli-green-medium); /* Nền xanh vừa */
+    color: var(--text-white); /* Chữ trắng */
+    border-color: var(--ghibli-green-medium);
+}
+.btn-primary:hover:not(:disabled) { /* Hover khi không bị vô hiệu hóa */
+    background-color: var(--ghibli-green-deep); /* Đậm hơn */
+    border-color: var(--ghibli-green-deep);
+    box-shadow: 0 4px 10px rgba(94, 140, 106, 0.2); /* Bóng đổ */
+    transform: translateY(-2px); /* Nhấc lên */
+}
+.btn-primary:active:not(:disabled) { /* Khi nhấn giữ */
+    background-color: var(--ghibli-green-deep);
+    border-color: var(--ghibli-green-deep);
+    transform: translateY(0); /* Trở về vị trí cũ */
+    box-shadow: none; /* Bỏ bóng đổ */
+}
+
+/* Nút phụ (Secondary) - Màu vàng */
+.btn-secondary {
+    background-color: var(--ghibli-yellow-sun);
+    color: #8c6d3c; /* Nâu đậm hơn cho dễ đọc */
+    border-color: var(--ghibli-yellow-sun);
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: #f2cd7b; /* Vàng đậm hơn */
+    border-color: #f2cd7b;
+    color: #7c5d2c;
+    box-shadow: 0 4px 10px rgba(245, 215, 140, 0.2);
+    transform: translateY(-2px);
+}
+.btn-secondary:active:not(:disabled) {
+    background-color: #f2cd7b;
+    border-color: #f2cd7b;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Nút chỉ có viền (Outline) */
+.btn-outline {
+    background-color: transparent; /* Nền trong suốt */
+    color: var(--text-secondary); /* Chữ màu phụ */
+    border: 1px solid var(--border-color-strong); /* Viền đậm hơn */
+}
+.btn-outline:hover:not(:disabled) {
+    background-color: var(--ghibli-green-light); /* Nền xanh nhạt */
+    border-color: var(--ghibli-green-medium); /* Viền xanh vừa */
+    color: var(--ghibli-green-deep); /* Chữ xanh đậm */
+}
+
+/* Nút hành động trong bảng (Sửa/Xóa) */
+.action-btn {
+    padding: 6px; /* Padding nhỏ */
+    font-size: 16px; /* Cỡ icon */
+    color: var(--text-secondary); /* Màu xám mặc định */
+    margin: 0 3px; /* Khoảng cách giữa các nút */
+    border-radius: 4px; /* Bo góc nhẹ */
+    background: none; /* Đảm bảo không có nền */
+    border: none; /* Đảm bảo không có viền */
+}
+.action-btn.btn-edit { color: var(--ghibli-blue-water); } /* Màu sửa - xanh nước */
+.action-btn.btn-danger { color: var(--ghibli-red-accent); } /* Màu xóa - đỏ */
+.action-btn:hover:not(:disabled) { background-color: var(--ghibli-green-light); } /* Nền khi hover */
+.action-btn.btn-edit:hover:not(:disabled) { color: var(--ghibli-green-deep); } /* Đổi màu icon khi hover */
+.action-btn.btn-danger:hover:not(:disabled) { color: #c55a5a; } /* Đỏ đậm hơn khi hover */
+
+
+/* Input (Kiểu dáng chung trong chế độ App) */
+.app-mode input[type="text"],
+.app-mode input[type="search"],
+.app-mode input[type="date"],
+.app-mode input[type="month"], /* Thêm type month */
+.app-mode input[type="email"],
+.app-mode input[type="password"],
+.app-mode textarea,
+.app-mode select {
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--base-border-radius);
+    font-size: 15px;
+    background-color: var(--text-white);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%; /* Mặc định chiếm toàn bộ chiều rộng */
+    font-family: inherit;
+    line-height: 1.5; /* Đảm bảo chiều cao dòng nhất quán */
+}
+/* Căn chỉnh padding cho input date/month khi có icon */
+.app-mode input[type="date"],
+.app-mode input[type="month"] {
+    position: relative; /* Cần cho icon nếu đặt bên trong */
+    /* appearance: none;  /* Cố gắng loại bỏ giao diện mặc định */
+    /* -webkit-appearance: none; */
+    /* background-image: none; /* Bỏ mũi tên mặc định nếu có */
+}
+
+/* Hide default date/month picker indicator */
+.app-mode input[type="date"]::-webkit-calendar-picker-indicator,
+.app-mode input[type="month"]::-webkit-calendar-picker-indicator {
+    /* display: none; */ /* Bỏ dòng này nếu muốn dùng icon FontAwesome */
+    opacity: 0; /* Ẩn indicator mặc định nhưng vẫn giữ vùng click */
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px; /* Điều chỉnh vùng click */
+    height: 100%;
+    cursor: pointer;
+}
+
+
+.app-mode input:focus,
+.app-mode textarea:focus,
+.app-mode select:focus {
+    border-color: var(--ghibli-green-medium);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(138, 172, 142, 0.2); /* Hiệu ứng focus xanh lá */
+}
+.app-mode textarea {
+    min-height: 80px; /* Chiều cao tối thiểu */
+    resize: vertical; /* Cho phép thay đổi chiều cao dọc */
+}
+
+/* Thông báo (Lỗi/Thành công) - Dùng chung */
+.message {
+     padding: 10px 15px;
+     border-radius: 4px;
+     font-size: 13px;
+     margin-bottom: 15px;
+     text-align: left;
+     display: flex; /* Dùng flex để căn icon */
+     align-items: center;
+     gap: 8px; /* Khoảng cách giữa icon và text */
+}
+.error-message { /* Thông báo lỗi */
+     color: var(--ghibli-red-accent, #d87070); /* Chữ đỏ */
+     background-color: rgba(248, 215, 218, 0.9); /* Nền đỏ nhạt */
+     border: 1px solid rgba(245, 198, 203, 0.9); /* Viền đỏ nhạt */
+}
+.success-message { /* Thông báo thành công */
+     color: #4b835a; /* Chữ xanh lá đậm */
+     background-color: rgba(223, 240, 227, 0.9); /* Nền xanh lá nhạt */
+     border: 1px solid rgba(196, 224, 202, 0.9); /* Viền xanh lá nhạt */
+}
+.message i { /* Icon trong thông báo */
+     font-size: 1.1em; /* Hơi lớn hơn text */
+     flex-shrink: 0; /* Không bị co lại */
+}
+
+/* --- Các Thành phần Cụ thể trong Chế độ App --- */
+
+/* Header */
+.header-left, .header-right { /* Nhóm trái và phải trong header */
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Khoảng cách giữa các phần tử */
+}
+
+.sidebar-toggle { /* Nút bật/tắt sidebar */
+    font-size: 22px;
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 50%; /* Bo tròn */
+}
+.sidebar-toggle:hover {
+    background-color: var(--ghibli-green-light);
+    color: var(--ghibli-green-deep);
+}
+
+.app-header .logo img { /* Logo trong header */
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+    height: 35px; /* Chiều cao logo */
+    opacity: 1; /* Rõ nét */
+}
+
+.icon-button { /* Các nút icon đơn lẻ trong header */
+    font-size: 18px;
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 50%;
+}
+.icon-button:hover {
+    color: var(--text-primary);
+    background-color: var(--ghibli-green-light);
+}
+
+/* Menu người dùng */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Khoảng cách giữa avatar, tên, icon */
+    cursor: pointer;
+    padding: 5px 8px; /* Padding nhỏ */
+    border-radius: var(--base-border-radius);
+    position: relative; /* Cần cho dropdown */
+}
+.user-menu:hover {
+     background-color: var(--ghibli-green-light); /* Nền khi hover */
+}
+.user-menu .avatar { /* Ảnh đại diện */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Bo tròn */
+    border: 2px solid var(--ghibli-cream); /* Viền màu kem */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Bóng đổ nhẹ */
+}
+.user-menu span { /* Tên người dùng */
+    font-weight: 500;
+    font-size: 14px;
+    white-space: nowrap; /* Không xuống dòng */
+}
+.user-menu i.fa-chevron-down { /* Icon mũi tên xuống */
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease; /* Hiệu ứng xoay */
+}
+.user-menu.open i.fa-chevron-down { /* Khi dropdown mở */
+    transform: rotate(180deg); /* Xoay 180 độ */
+}
+/* Dropdown của user menu */
+.user-dropdown {
+    position: absolute; /* Định vị tuyệt đối so với user-menu */
+    top: 100%; /* Ngay dưới user-menu */
+    right: 0; /* Căn phải */
+    background-color: var(--text-white); /* Nền trắng */
+    border: 1px solid var(--border-color); /* Viền */
+    border-radius: var(--base-border-radius); /* Bo góc */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Bóng đổ */
+    padding: 10px 0; /* Padding trên dưới */
+    min-width: 150px; /* Chiều rộng tối thiểu */
+    z-index: 100; /* Nằm trên các phần tử khác */
+    margin-top: 5px; /* Khoảng cách nhỏ với user-menu */
+}
+.user-dropdown a { /* Link trong dropdown */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Khoảng cách giữa icon và text */
+    padding: 8px 15px; /* Padding */
+    color: var(--text-primary); /* Màu chữ chính */
+    font-size: 14px;
+}
+.user-dropdown a:hover {
+    background-color: var(--ghibli-green-light); /* Nền khi hover */
+    color: var(--ghibli-green-deep); /* Đổi màu chữ */
+}
+.user-dropdown a i { /* Icon trong link dropdown */
+    width: 16px; /* Chiều rộng cố định cho icon */
+    text-align: center;
+    color: var(--text-secondary); /* Màu icon mặc định */
+}
+.user-dropdown a:hover i {
+    color: var(--ghibli-green-deep); /* Đổi màu icon khi hover */
+}
+
+
+/* Sidebar */
+.sidebar-title { /* Tiêu đề nhóm menu (tùy chọn) */
+    padding: 15px 25px 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase; /* Viết hoa */
+    letter-spacing: 0.8px; /* Giãn cách chữ */
+}
+
+.sidebar-nav ul { /* Danh sách menu */
+    padding: 0;
+    margin-bottom: 15px; /* Khoảng cách giữa các nhóm menu */
+}
+.sidebar-nav li a { /* Link menu */
+    display: flex;
+    align-items: center;
+    padding: 13px 25px; /* Padding lớn hơn */
+    color: var(--text-secondary); /* Mặc định màu nhạt */
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn phần thừa */
+    border-left: 4px solid transparent; /* Viền trái trong suốt (để hiện khi active/hover) */
+    position: relative;
+    font-weight: 500;
+}
+.sidebar-nav li a i { /* Icon trong menu */
+    width: 20px; /* Chiều rộng cố định */
+    text-align: center;
+    margin-right: 18px; /* Khoảng cách với text */
+    font-size: 17px; /* Cỡ icon */
+    color: var(--ghibli-grey-totoro); /* Màu xám Totoro */
+    flex-shrink: 0; /* Không bị co lại */
+    transition: color 0.2s ease;
+}
+
+.sidebar-nav li a:hover { /* Khi hover link menu */
+    background-color: var(--ghibli-green-light); /* Nền xanh nhạt */
+    color: var(--ghibli-green-deep); /* Chữ xanh đậm */
+    border-left-color: var(--ghibli-green-medium); /* Hiện viền trái màu xanh vừa */
+}
+.sidebar-nav li a:hover i {
+   color: var(--ghibli-green-deep); /* Icon cũng đổi màu */
+}
+
+.sidebar-nav li.active a { /* Khi link được chọn (active) */
+    background-color: var(--ghibli-green-light);
+    color: var(--ghibli-green-deep);
+    font-weight: 600; /* Chữ đậm hơn */
+    border-left-color: var(--ghibli-green-deep); /* Viền trái màu xanh đậm */
+}
+.sidebar-nav li.active a i {
+    color: var(--ghibli-green-deep); /* Icon cũng đậm */
+}
+
+
+/* Khu vực Nội dung chính */
+.content-header { /* Header của nội dung (tiêu đề trang, nút action) */
+    display: flex;
+    justify-content: space-between; /* Đẩy tiêu đề và action ra xa */
+    align-items: flex-start; /* Căn trên cùng */
+    margin-bottom: 35px; /* Khoảng cách dưới */
+    flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+    gap: 20px; /* Khoảng cách nếu xuống dòng */
+}
+.content-header h1 { /* Tiêu đề trang */
+    font-family: var(--font-secondary); /* Font serif */
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ghibli-green-deep); /* Màu xanh đậm */
+    line-height: 1.3;
+    margin-bottom: 5px; /* Khoảng cách nhỏ với dòng mô tả (nếu có) */
+}
+.welcome-message p { /* Dòng chữ chào mừng */
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+
+.actions { /* Nhóm các nút hành động ở header nội dung */
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Khoảng cách giữa các nút */
+    flex-wrap: wrap; /* Xuống dòng nếu không đủ chỗ */
+}
+
+/* Ô tìm kiếm (nếu có) */
+.search-box {
+    position: relative;
+}
+.search-box input {
+    padding: 10px 15px 10px 40px; /* Padding để chừa chỗ cho icon trái */
+    min-width: 250px; /* Chiều rộng tối thiểu */
+    border-radius: 20px; /* Bo tròn nhiều */
+    background-color: var(--ghibli-green-light); /* Nền xanh nhạt */
+    border-color: transparent; /* Bỏ viền mặc định */
+}
+.search-box input:focus {
+    background-color: var(--text-white); /* Nền trắng khi focus */
+    border-color: var(--ghibli-green-medium); /* Hiện viền xanh */
+    box-shadow: 0 0 0 3px rgba(138, 172, 142, 0.2); /* Hiệu ứng focus */
+}
+.search-box i { /* Icon kính lúp */
+    position: absolute;
+    left: 15px; /* Bên trái */
+    top: 50%; /* Căn giữa dọc */
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+/* Card Component (Dùng cho Dashboard và có thể cả các trang khác) */
+.card {
+    background-color: rgba(255, 255, 255, 0.95); /* Nền trắng hơi trong */
+    border-radius: var(--base-border-radius);
+    box-shadow: var(--card-shadow); /* Bóng đổ */
+    margin-bottom: 25px; /* Khoảng cách dưới */
+    overflow: hidden; /* Giữ các góc bo tròn đẹp */
+    position: relative; /* Cần cho trang trí góc */
+    border: 1px solid rgba(220, 228, 224, 0.5); /* Viền mờ nhẹ */
+    transition: var(--base-transition); /* Hiệu ứng chuyển động */
+}
+/* Hình trang trí góc card */
+.card::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    background-image: var(--ghibli-card-corner-image); /* Ảnh chiếc lá */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.6; /* Hơi mờ */
+    pointer-events: none; /* Không tương tác được */
+    transition: opacity 0.3s ease;
+}
+.card:hover::after {
+    opacity: 0.9; /* Rõ hơn khi hover card */
+}
+.card:hover { /* Hiệu ứng hover chung cho card */
+    transform: translateY(-3px); /* Nhấc lên nhẹ */
+    box-shadow: 0 6px 12px rgba(109, 122, 116, 0.15); /* Bóng đổ rõ hơn */
+}
+
+.card-header { /* Header của card */
+    padding: 15px 25px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(250, 252, 251, 0.8); /* Nền header hơi trong */
+}
+.card-header h2, .card-header h3 { /* Tiêu đề trong header card */
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ghibli-green-deep);
+    margin: 0;
+}
+.card-body { /* Nội dung card */
+    padding: 20px 25px;
+}
+.card-footer { /* Footer của card */
+    padding: 15px 25px;
+    border-top: 1px solid var(--border-color);
+    background-color: rgba(253, 253, 253, 0.9);
+    text-align: right; /* Thường căn phải */
+}
+
+
+/* Lưới và Card Đặc trưng cho Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Lưới tự động điều chỉnh */
+    gap: 25px; /* Khoảng cách giữa các card */
+    margin-bottom: 30px;
+}
+.feature-grid { /* Lưới riêng cho các card chức năng */
+     gap: 30px; /* Khoảng cách lớn hơn */
+     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Card rộng hơn */
+}
+
+.feature-card { /* Kiểu dáng riêng cho card chức năng */
+    display: flex;
+    flex-direction: column; /* Xếp dọc: icon -> text -> mũi tên */
+    align-items: center; /* Căn giữa ngang */
+    text-align: center;
+    padding: 35px 25px; /* Padding lớn hơn */
+    text-decoration: none; /* Bỏ gạch chân link */
+    color: inherit; /* Kế thừa màu chữ */
+    min-height: 220px; /* Chiều cao tối thiểu bằng nhau */
+    justify-content: space-between; /* Phân bố không gian dọc */
+}
+/* Bỏ hình lá ở góc cho feature card (nếu muốn) */
+.feature-card::after { display: none; }
+
+.feature-card:hover { /* Hiệu ứng hover rõ hơn cho feature card */
+    transform: translateY(-5px); /* Nhấc lên nhiều hơn */
+    box-shadow: 0 10px 25px rgba(109, 122, 116, 0.2);
+    border-color: var(--ghibli-green-medium); /* Viền xanh khi hover */
+}
+
+.feature-icon { /* Icon lớn ở đầu feature card */
+    width: 70px;
+    height: 70px;
+    border-radius: 50%; /* Tròn */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px; /* Khoảng cách tới tiêu đề */
+    font-size: 28px; /* Cỡ icon */
+    flex-shrink: 0; /* Không co lại */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+}
+/* Màu nền và màu icon cho feature card */
+.feature-icon.icon-sky { background-color: #e3f1f6; color: var(--ghibli-blue-water); }
+.feature-icon.icon-green { background-color: var(--ghibli-green-light); color: var(--ghibli-green-deep); }
+.feature-icon.icon-blue { background-color: #e3eef6; color: #5a8fbd; } /* Xanh dương khác */
+.feature-icon.icon-yellow { background-color: #fef5d8; color: var(--ghibli-brown-earth); }
+.feature-icon.icon-red { background-color: #fdeaea; color: var(--ghibli-red-accent); }
+.feature-icon.icon-grey { background-color: #f0f0f0; color: var(--ghibli-grey-totoro); }
+
+.feature-info h3 { /* Tiêu đề feature card */
+    font-family: var(--font-primary); /* Font khác nếu muốn */
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.feature-info p { /* Mô tả feature card */
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px; /* Khoảng cách tới mũi tên */
+    flex-grow: 1; /* Cho phép mô tả co giãn để đẩy mũi tên xuống */
+}
+
+.feature-arrow { /* Mũi tên ở cuối feature card */
+    font-size: 16px;
+    color: var(--ghibli-green-medium); /* Màu xanh */
+    opacity: 0; /* Mặc định ẩn */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px); /* Hơi thụt vào */
+    margin-top: auto; /* Đảm bảo nằm cuối cùng */
+}
+.feature-card:hover .feature-arrow {
+    opacity: 1; /* Hiện ra khi hover card */
+    transform: translateX(0); /* Di chuyển ra */
+}
+
+
+/* Kiểu dáng Bảng Dữ liệu */
+.content-body { /* Khối bao quanh bảng/nội dung chính */
+    background-color: rgba(255, 255, 255, 0.95); /* Nền giống card */
+    border-radius: var(--base-border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden; /* Cắt góc bảng */
+    margin-top: 30px; /* Khoảng cách với header/grid */
+    border: 1px solid rgba(220, 228, 224, 0.5);
+    position: relative;
+}
+/* Thêm lá trang trí cho khối chứa bảng */
+.content-body::after {
+     content: '';
+    position: absolute;
+    bottom: 5px; right: 5px;
+    width: 35px; height: 35px;
+    background-image: var(--ghibli-card-corner-image);
+    background-size: contain; background-repeat: no-repeat;
+    opacity: 0.6; pointer-events: none;
+}
+
+.table-wrapper { /* Khối bao trực tiếp thẻ table để cho phép cuộn ngang */
+    padding: 10px 25px 25px 25px; /* Padding bên trong, trừ phần top */
+    overflow-x: auto; /* Hiện thanh cuộn ngang khi cần */
+}
+
+table { /* Thẻ table */
+    width: 100%; /* Chiếm toàn bộ chiều rộng của wrapper */
+    border-collapse: collapse; /* Gộp đường viền ô */
+    margin-bottom: 20px; /* Khoảng cách dưới bảng */
+    min-width: 600px; /* Chiều rộng tối thiểu trước khi cuộn */
+}
+
+th, td { /* Ô header và ô dữ liệu */
+    padding: 15px 18px; /* Padding bên trong ô */
+    text-align: left; /* Căn trái text */
+    border-bottom: 1px solid var(--border-color); /* Đường kẻ dưới mỗi hàng */
+    vertical-align: middle; /* Căn giữa dọc */
+    white-space: nowrap; /* Mặc định không xuống dòng */
+}
+/* Cho phép xuống dòng ở cột Họ và Tên, Chức vụ, Phòng ban, Tiêu chí đánh giá, Ghi chú */
+th:nth-child(3), td:nth-child(3), /* Họ Tên */
+th:nth-child(4), td:nth-child(4), /* Chức vụ */
+th:nth-child(5), td:nth-child(5), /* Phòng ban */
+th:nth-child(6), td:nth-child(6)  /* Trạng thái / Ghi chú / Tiêu chí */
+{
+    white-space: normal;
+}
+
+thead th { /* Ô header */
+    background-color: transparent; /* Nền trong suốt */
+    font-weight: 600; /* Chữ đậm */
+    color: var(--text-secondary); /* Màu chữ phụ */
+    font-size: 13px; /* Cỡ chữ nhỏ hơn */
+    text-transform: none; /* Không viết hoa */
+    letter-spacing: 0.3px; /* Giãn cách chữ nhẹ */
+    border-bottom-width: 2px; /* Đường kẻ dưới header đậm hơn */
+    border-color: var(--border-color-strong); /* Màu đường kẻ đậm hơn */
+}
+
+tbody tr:last-child td { border-bottom: none; } /* Bỏ đường kẻ dưới của hàng cuối */
+tbody tr { transition: background-color 0.15s ease; } /* Hiệu ứng hover */
+tbody tr:hover { background-color: var(--ghibli-green-light); } /* Nền xanh rất nhạt khi hover */
+td:last-child { text-align: center; white-space: nowrap; width: 1%; } /* Cột cuối (hành động) căn giữa, không bị wrap */
+
+/* Checkbox trong bảng */
+th input[type="checkbox"], td input[type="checkbox"] {
+    cursor: pointer; width: 17px; height: 17px;
+    accent-color: var(--ghibli-green-medium); /* Màu khi check */
+    border: 1px solid var(--border-color);
+    border-radius: 3px; /* Hơi vuông */
+    vertical-align: middle; /* Căn giữa với text (nếu có) */
+}
+
+/* Nhãn Trạng thái (Status Badge) */
+.status {
+    padding: 4px 12px; /* Padding */
+    border-radius: 15px; /* Bo tròn nhiều */
+    font-size: 12px; /* Chữ nhỏ */
+    font-weight: 500;
+    white-space: nowrap;
+    display: inline-block; /* Để padding có tác dụng */
+    line-height: 1.4;
+    text-align: center;
+    border: 1px solid transparent; /* Viền mặc định */
+}
+.status-active { background-color: #dff0e3; color: #4b835a; border-color: #c4e0ca;} /* Đang làm việc / Đang mở / Giỏi */
+.status-inactive { background-color: #ededed; color: #777777; border-color: #dcdcdc;} /* Đã nghỉ / Đã đóng / Chưa đánh giá */
+.status-pending { background-color: #fef5d8; color: #a78a44; border-color: #fbeab9;} /* Chờ duyệt / Khá */
+
+/* Phân trang (Pagination) */
+.pagination {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 25px; /* Padding */
+    border-top: 1px solid var(--border-color); /* Đường kẻ trên */
+    background-color: rgba(255, 255, 255, 0.95); /* Nền giống card */
+    border-bottom-left-radius: var(--base-border-radius); /* Bo góc dưới */
+    border-bottom-right-radius: var(--base-border-radius);
+    font-size: 13px; color: var(--text-secondary);
+    flex-wrap: wrap; gap: 15px; /* Xuống dòng nếu cần */
+    margin-top: -20px; /* Hơi chồng lên margin dưới của table */
+    position: relative;
+    z-index: 2; /* Nằm trên hiệu ứng hover của table */
+}
+.pagination span strong { color: var(--text-primary); font-weight: 600; } /* Số đậm */
+.pagination select { /* Dropdown chọn số mục/trang */
+    padding: 6px 10px; font-size: 13px; margin: 0 5px 0 15px;
+    flex-shrink: 0; background-color: var(--ghibli-green-light);
+    border-color: transparent; border-radius: 4px;
+}
+.page-nav { display: flex; align-items: center; gap: 6px; margin-left: auto; } /* Nhóm nút điều hướng trang */
+.page-nav button { /* Nút Prev/Next */
+    padding: 6px 12px; border: 1px solid var(--border-color);
+    border-radius: var(--base-border-radius); background-color: var(--text-white);
+    color: var(--text-secondary);
+}
+.page-nav button:hover:not(:disabled) {
+    border-color: var(--ghibli-green-medium); color: var(--ghibli-green-deep);
+    background-color: var(--ghibli-green-light);
+}
+.page-nav button:disabled { /* Nút bị vô hiệu hóa */
+    color: #bbb; cursor: not-allowed; background-color: #f8f8f8;
+    border-color: var(--border-color); opacity: 0.7;
+}
+.page-nav span { margin: 0 8px; color: var(--text-secondary); } /* Text "Trang x / y" */
+.page-nav span strong { color: var(--ghibli-green-deep); } /* Số trang hiện tại */
+
+
+/* Layout Form trong Chế độ App (ví dụ: trong card hoặc trang profile) */
+.form-grid { /* Lưới cho các trường input */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Tự động chia cột */
+    gap: 20px 30px; /* Khoảng cách dọc và ngang */
+}
+.app-mode .form-group { /* Nhóm label + input trong app mode */
+    margin-bottom: 0; /* Bỏ margin bottom mặc định khi dùng grid gap */
+}
+.app-mode .form-group label { /* Label trong app mode */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.form-group.full-width { /* Class để input chiếm toàn bộ chiều rộng grid */
+    grid-column: 1 / -1;
+}
+
+/* Placeholder cho Biểu đồ */
+.chart-placeholder {
+    height: 300px; background-color: rgba(240, 245, 242, 0.7); /* Nền mờ */
+    border: 1px dashed var(--border-color-strong); /* Viền đứt */
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); font-style: italic; /* Chữ nghiêng */
+    border-radius: var(--base-border-radius);
+    backdrop-filter: blur(2px); /* Làm mờ nhẹ nền phía sau */
+    margin-top: 30px;
+}
+
+/* Kiểu dáng riêng cho trang Profile (Ví dụ) */
+.profile-header {
+    display: flex; align-items: center; gap: 25px; margin-bottom: 30px;
+    background-color: var(--ghibli-green-light); padding: 25px;
+    border-radius: var(--base-border-radius);
+}
+
+/* --- Evaluation Page Specific Styles --- */
+
+/* Style for mode switching buttons */
+/* transitions already defined in .btn */
+.evaluation-mode-switcher .btn.active-mode {
+    background-color: var(--ghibli-green-deep); /* Dark green for active */
+    color: var(--text-white);
+    border-color: var(--ghibli-green-deep);
+    font-weight: 600;
+    pointer-events: none; /* Prevent clicking the active button */
+    opacity: 1; /* Ensure full opacity */
+}
+/* Style for inactive mode buttons */
+.evaluation-mode-switcher .btn:not(.active-mode) {
+     background-color: transparent;
+     color: var(--text-secondary);
+     border: 1px solid var(--border-color-strong);
+}
+.evaluation-mode-switcher .btn:not(.active-mode):hover {
+     background-color: var(--ghibli-green-light);
+     border-color: var(--ghibli-green-medium);
+     color: var(--ghibli-green-deep);
+}
+
+
+/* Hide evaluation content sections by default */
+/* .evaluation-content-section { display: none; } /* JS will handle this */
+
+/* Styling for the manager review display */
+.review-details-grid {
+    /* Using grid defined inline for now */
+}
+.review-details-grid dt {
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    display: block; /* Ensure dt is block level */
+}
+.review-details-grid dd {
+    margin-left: 0; /* Reset browser default */
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.review-details-grid dd strong {
+    font-weight: 700; /* Make score numbers slightly bolder */
+}
+
+/* Simple layout for score items */
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--border-color);
+}
+.review-item:last-child {
+    border-bottom: none;
+}
+.review-item dt {
+    margin-bottom: 0; /* Reset margin for flex layout */
+    flex-basis: 70%; /* Give label more space */
+    text-align: left;
+}
+.review-item dd {
+     margin-bottom: 0;
+     flex-basis: 25%;
+     text-align: right;
+}
+
+/* Style total score differently */
+.total-score {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color-strong);
+    border-bottom: none;
+}
+
+/* Add some margin between setup form/list */
+#evaluation-setup-mode > div + div {
+    margin-top: 30px;
+}
+
+/* Message styling (add warning type if not present) */
+.warning-message {
+    color: #856404; /* Bootstrap warning text color */
+    background-color: rgba(255, 243, 205, 0.9); /* Bootstrap warning background */
+    border: 1px solid rgba(255, 238, 186, 0.9); /* Bootstrap warning border */
+}
+.info-message { /* Add if not defined */
+    color: #0c5460; /* Bootstrap info text */
+    background-color: rgba(209, 236, 241, 0.9); /* Bootstrap info background */
+    border: 1px solid rgba(190, 229, 235, 0.9); /* Bootstrap info border */
+}
+
+
+/* Red asterisk for required fields */
+label span[style*="color:red"] {
+    margin-left: 3px;
+}
